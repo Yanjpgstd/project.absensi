@@ -1,0 +1,938 @@
+    <!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi SMK GOLDEN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --gold-light: #F4E4B7;
+            --gold-dark: #B8941F;
+            --navy: #0A1929;
+            --navy-light: #1A2942;
+            --white: #FFFFFF;
+            --gray: #F5F7FA;
+            --gray-dark: #64748B;
+            --success: #10B981;
+            --danger: #EF4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--navy);
+            min-height: 100vh;
+            padding: 30px 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(45deg, transparent 48%, rgba(212, 175, 55, 0.03) 49%, rgba(212, 175, 55, 0.03) 51%, transparent 52%),
+                linear-gradient(-45deg, transparent 48%, rgba(212, 175, 55, 0.03) 49%, rgba(212, 175, 55, 0.03) 51%, transparent 52%);
+            background-size: 60px 60px;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--navy-light) 0%, var(--navy) 100%);
+            border: 2px solid var(--gold);
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+            opacity: 0.05;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+
+        .school-logo {
+            width: 120px;
+            height: 120px;
+            background: var(--white);
+            border: 3px solid var(--gold);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .school-logo:hover {
+            transform: scale(1.05);
+            border-color: var(--gold-light);
+        }
+
+        .school-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 10px;
+        }
+
+        .logo-placeholder {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--gold);
+            text-align: center;
+        }
+
+        .logo-upload-btn {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            width: 35px;
+            height: 35px;
+            background: var(--gold);
+            border: 2px solid var(--navy);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .logo-upload-btn:hover {
+            background: var(--gold-light);
+            transform: scale(1.1);
+        }
+
+        #logoInput {
+            display: none;
+        }
+
+        .logo-actions {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            display: none;
+            gap: 5px;
+        }
+
+        .school-logo:hover .logo-actions {
+            display: flex;
+        }
+
+        .logo-action-btn {
+            width: 28px;
+            height: 28px;
+            background: var(--danger);
+            border: 2px solid var(--white);
+            border-radius: 50%;
+            color: white;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logo-action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .header-text {
+            flex: 1;
+        }
+
+        .header-text h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            color: var(--gold);
+            margin-bottom: 8px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .header-text .subtitle {
+            color: var(--gold-light);
+            font-size: 1.2rem;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .info-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, var(--navy-light) 0%, var(--navy) 100%);
+            border: 1px solid var(--gold);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.8s ease-out both;
+            transition: all 0.3s ease;
+        }
+
+        .info-card:nth-child(1) { animation-delay: 0.1s; }
+        .info-card:nth-child(2) { animation-delay: 0.2s; }
+        .info-card:nth-child(3) { animation-delay: 0.3s; }
+        .info-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold-light);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.2);
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: var(--gray-dark);
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.8s ease-out both;
+        }
+
+        .card:nth-child(1) { animation-delay: 0.5s; }
+        .card:nth-child(2) { animation-delay: 0.6s; }
+
+        .card-header {
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--navy);
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            background: var(--gray);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            color: var(--navy);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 18px 30px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-checkin {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            color: var(--navy);
+        }
+
+        .btn-checkout {
+            background: linear-gradient(135deg, var(--navy-light) 0%, var(--navy) 100%);
+            color: var(--gold);
+            border: 2px solid var(--gold);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .stat-card {
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card.success {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+        }
+
+        .stat-card.danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            color: white;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .attendance-table {
+            grid-column: 1 / -1;
+            animation: slideUp 0.8s ease-out 0.7s both;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 15px;
+            border: 1px solid #E2E8F0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+        }
+
+        th {
+            padding: 20px 25px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 20px 25px;
+            border-bottom: 1px solid #E2E8F0;
+            font-size: 0.95rem;
+            color: var(--navy);
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        tbody tr:hover {
+            background: var(--gray);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-hadir {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-pulang {
+            background: var(--danger);
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--gray-dark);
+            font-size: 1.1rem;
+        }
+
+        /* Modal for logo preview */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 400px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn.confirm {
+            background: var(--success);
+            color: white;
+        }
+
+        .modal-btn.cancel {
+            background: var(--gray-dark);
+            color: white;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.05; transform: scale(1); }
+            50% { opacity: 0.1; transform: scale(1.1); }
+        }
+
+        @media (max-width: 1024px) {
+            .info-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 30px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .info-bar {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 12px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="school-logo" onclick="document.getElementById('logoInput').click()">
+                        <div id="logoDisplay" class="logo-placeholder">G</div>
+                        <div class="logo-actions">
+                            <div class="logo-action-btn" onclick="event.stopPropagation(); removeLogo()" title="Hapus Logo">✕</div>
+                        </div>
+                    </div>
+                    <div class="logo-upload-btn" onclick="document.getElementById('logoInput').click()" title="Upload Logo">
+                        📷
+                    </div>
+                    <input type="file" id="logoInput" accept="image/*">
+                </div>
+                <div class="header-text">
+                    <h1>SMK Golden</h1>
+                    <div class="subtitle">Sistem Absensi Digital</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="info-bar">
+            <div class="info-card">
+                <div class="info-label">⏰ Waktu</div>
+                <div class="info-value" id="clock" style="font-size: 2rem;">00:00:00</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">📅 Tanggal</div>
+                <div class="info-value" id="date" style="font-size: 1.2rem;"></div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">📊 Total Hari Ini</div>
+                <div class="info-value"><span id="totalToday">0</span></div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">🎓 Status</div>
+                <div class="info-value" style="font-size: 1.5rem; color: var(--success);">Aktif</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Form Absensi</h2>
+                </div>
+                <form id="attendanceForm">
+                    <div class="form-group">
+                        <label for="nama">Nama Lengkap</label>
+                        <input type="text" id="nama" placeholder="Masukkan nama lengkap" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nis">NIS / NIP</label>
+                        <input type="text" id="nis" placeholder="Nomor Induk Siswa/Siswi" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kelas">Kelas / Jurusan</label>
+                        <select id="kelas" required>
+                            <option value="">-- Pilih Kelas/Jurusan --</option>
+                            <option value="X TKJ 1">X TKJ 1</option>
+                            <option value="X TKJ 2">X TKJ 2</option>
+                            <option value="X TKJ 3">X TKJ 3</option>
+                            <option value="X MPLB 1">X MPLB 1</option>
+                            <option value="X MPLB 2">X MPLB 2</option>
+                            <option value="X MPLB 3">X MPLB 3</option>
+                            <option value="X PM 1">X PM 1</option>
+                            <option value="X PM 2">X PM 2</option>
+                            <option value="X AKP 1">X AKP 1</option>
+                            <option value="X AKP 2">X AKP 2</option>
+                            <option value="XI TKJ 1">XI TKJ 1</option>
+                            <option value="XI TKJ 2">XI TKJ 2</option>
+                            <option value="XI TKJ 3">XI TKJ 3</option>
+                            <option value="XI MPLB 1">XI MPLB 1</option>
+                            <option value="XI MPLB 2">XI MPLB 2</option>
+                            <option value="XI MPLB 3">XI MPLB 3</option>
+                            <option value="XI AKP 1">XI AKP 1</option>
+                            <option value="XI AKP 2">XI AKP 2</option>
+                            <option value="XI PM 1">XI PM 1</option>
+                            <option value="XI PM 2">XI PM 2</option>
+                            <option value="XII TKJ 1">XII TKJ 1</option>
+                            <option value="XII TKJ 2">XII TKJ 2</option>
+                            <option value="XII TKJ 3">XII TKJ 3</option>
+                            <option value="XII MPLB 1">XII MPLB 1</option>
+                            <option value="XII MPLB 2">XII MPLB 2</option>
+                            <option value="XII MPLB 3">XII MPLB 3</option>
+                            <option value="XII PM 1">XII PM 1</option>
+                            <option value="XII PM 2">XII PM 2</option>
+                            <option value="XII AKP 1">XII AKP 1</option>
+                            <option value="XII AKP 2">XII AKP 2</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="keterangan">Keterangan (Optional)</label>
+                        <input type="text" id="keterangan" placeholder="Misal: Terlambat, Izin, dll">
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn-checkin">✓ Check In</button>
+                        <button type="button" class="btn-checkout">→ Check Out</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Statistik</h2>
+                </div>
+                <div class="stats-container">
+                    <div class="stat-card success">
+                        <div class="stat-icon">✓</div>
+                        <div class="stat-number" id="countMasuk">0</div>
+                        <div class="stat-label">Total Masuk</div>
+                    </div>
+                    <div class="stat-card danger">
+                        <div class="stat-icon">→</div>
+                        <div class="stat-number" id="countPulang">0</div>
+                        <div class="stat-label">Total Pulang</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card attendance-table">
+                <div class="card-header">
+                    <h2 class="card-title">Riwayat Absensi Hari Ini</h2>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Waktu</th>
+                                <th>Nama</th>
+                                <th>NIS/NIP</th>
+                                <th>Kelas/Jurusan</th>
+                                <th>Status</th>
+                                <th>Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceList">
+                            <tr>
+                                <td colspan="6" class="empty-state">Belum ada data absensi hari ini</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for logo preview -->
+    <div id="logoModal" class="modal">
+        <div class="modal-content">
+            <h2 style="color: var(--navy); margin-bottom: 10px;">Preview Logo Sekolah</h2>
+            <img id="logoPreview" src="" alt="Logo Preview">
+            <div class="modal-buttons">
+                <button class="modal-btn confirm" onclick="confirmLogo()">✓ Gunakan Logo Ini</button>
+                <button class="modal-btn cancel" onclick="cancelLogo()">✕ Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update Clock and Date
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+            
+            const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            const dateStr = now.toLocaleDateString('id-ID', options);
+            document.getElementById('date').textContent = dateStr;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Logo Management
+        let tempLogoData = null;
+
+        // Load saved logo on page load
+        function loadSavedLogo() {
+            const savedLogo = localStorage.getItem('schoolLogo');
+            if (savedLogo) {
+                const logoDisplay = document.getElementById('logoDisplay');
+                logoDisplay.innerHTML = `<img src="${savedLogo}" alt="School Logo">`;
+            }
+        }
+
+        // Handle logo file selection
+        document.getElementById('logoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Check file size (max 2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('⚠️ Ukuran file terlalu besar! Maksimal 2MB');
+                    return;
+                }
+
+                // Check file type
+                if (!file.type.startsWith('image/')) {
+                    alert('⚠️ File harus berupa gambar!');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    tempLogoData = event.target.result;
+                    document.getElementById('logoPreview').src = tempLogoData;
+                    document.getElementById('logoModal').classList.add('active');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Confirm logo upload
+        function confirmLogo() {
+            if (tempLogoData) {
+                localStorage.setItem('schoolLogo', tempLogoData);
+                const logoDisplay = document.getElementById('logoDisplay');
+                logoDisplay.innerHTML = `<img src="${tempLogoData}" alt="School Logo">`;
+                document.getElementById('logoModal').classList.remove('active');
+                tempLogoData = null;
+                
+                // Show success message
+                alert('✅ Logo sekolah berhasil diupload!');
+            }
+        }
+
+        // Cancel logo upload
+        function cancelLogo() {
+            document.getElementById('logoModal').classList.remove('active');
+            document.getElementById('logoInput').value = '';
+            tempLogoData = null;
+        }
+
+        // Remove logo
+        function removeLogo() {
+            if (confirm('Apakah Anda yakin ingin menghapus logo sekolah?')) {
+                localStorage.removeItem('schoolLogo');
+                const logoDisplay = document.getElementById('logoDisplay');
+                logoDisplay.innerHTML = '<div class="logo-placeholder">G</div>';
+                alert('✅ Logo berhasil dihapus!');
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('logoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                cancelLogo();
+            }
+        });
+
+        // Attendance data
+        let attendanceData = JSON.parse(localStorage.getItem('smkGoldenAttendance')) || [];
+
+        // Load data on page load
+        function loadAttendanceData() {
+            const today = new Date().toLocaleDateString('id-ID');
+            const todayData = attendanceData.filter(item => item.date === today);
+            
+            const tbody = document.getElementById('attendanceList');
+            
+            if (todayData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Belum ada data absensi hari ini</td></tr>';
+            } else {
+                tbody.innerHTML = todayData.map(item => `
+                    <tr>
+                        <td><strong>${item.time}</strong></td>
+                        <td>${item.nama}</td>
+                        <td>${item.nis}</td>
+                        <td>${item.kelas}</td>
+                        <td><span class="status-badge status-${item.status.toLowerCase()}">${item.status}</span></td>
+                        <td>${item.keterangan || '-'}</td>
+                    </tr>
+                `).join('');
+            }
+
+            // Update statistics
+            const countMasuk = todayData.filter(item => item.status === 'HADIR').length;
+            const countPulang = todayData.filter(item => item.status === 'PULANG').length;
+            document.getElementById('countMasuk').textContent = countMasuk;
+            document.getElementById('countPulang').textContent = countPulang;
+            document.getElementById('totalToday').textContent = todayData.length;
+        }
+
+        // Form handling
+        const form = document.getElementById('attendanceForm');
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitAttendance('HADIR');
+        });
+
+        document.querySelector('.btn-checkout').addEventListener('click', function() {
+            submitAttendance('PULANG');
+        });
+
+        function submitAttendance(status) {
+            const nama = document.getElementById('nama').value;
+            const nis = document.getElementById('nis').value;
+            const kelas = document.getElementById('kelas').value;
+            const keterangan = document.getElementById('keterangan').value;
+
+            if (!nama || !nis || !kelas) {
+                alert('⚠️ Mohon lengkapi data Nama, NIS/NIP, dan Kelas/Jurusan!');
+                return;
+            }
+
+            const now = new Date();
+            const time = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const date = now.toLocaleDateString('id-ID');
+
+            const newAttendance = {
+                time,
+                date,
+                nama,
+                nis,
+                kelas,
+                keterangan,
+                status
+            };
+
+            attendanceData.unshift(newAttendance);
+            localStorage.setItem('smkGoldenAttendance', JSON.stringify(attendanceData));
+
+            // Reset form
+            form.reset();
+
+            // Reload data
+            loadAttendanceData();
+
+            // Show confirmation
+            const emoji = status === 'HADIR' ? '✅' : '👋';
+            alert(`${emoji} Absensi ${status} berhasil dicatat!\n\nNama: ${nama}\nKelas: ${kelas}\nWaktu: ${time}`);
+        }
+
+        // Load data and logo on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            loadAttendanceData();
+            loadSavedLogo();
+        });
+    </script>
+</body>
+</html>
